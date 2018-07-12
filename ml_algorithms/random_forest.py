@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
+# for mac
+import matplotlib
+matplotlib.use('TkAgg')
+
+import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 from sklearn import metrics
-import matplotlib.pyplot as plt
 from sklearn.metrics import auc
 from ml_algorithms.ml_algorithm_interface import AlgorithmInterface
 

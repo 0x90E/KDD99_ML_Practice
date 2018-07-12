@@ -24,20 +24,20 @@ class AlgorithmInterface(metaclass=abc.ABCMeta):
                          'snmpguess': 1, 'sendmail': 1, 'ps': 1, 'xsnoop': 1, 'named': 1, 'xterm': 1, 'worm': 1,
                          'xlock': 1, 'sqlattack': 1, 'udpstorm': 1}
 
-        columns_name_path = "NSL_KDD/Field Names.csv"
+        columns_name_path = "KDD99/Field Names.csv"
         with open(columns_name_path, "r") as file:
             for line in file:
                 key, data_type = line.split(",")
                 self.columns[key] = data_type.replace("\n", "")
 
-        train_data_path = "NSL_KDD/KDDTrain+.csv"
+        train_data_path = "KDD99/KDDTrain+.csv"
         data = pd.read_csv(train_data_path)
         self.train_data = data.iloc[:, 0:-2]
         self.train_label = data.iloc[:, -2]
         self.train_data.columns = self.columns.keys()
         self.train_label.replace(labels_2_dict, inplace=True)
 
-        test_data_path = "NSL_KDD/KDDTest+.csv"
+        test_data_path = "KDD99/KDDTest+.csv"
         data = pd.read_csv(test_data_path)
         self.test_data = data.iloc[:, 0:-2]
         self.test_label = data.iloc[:, -2]
