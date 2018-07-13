@@ -7,37 +7,35 @@ import matplotlib.pyplot as plt
 from sklearn import metrics
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 from sklearn.metrics import auc
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.pipeline import Pipeline
+from sklearn.svm import SVC
 from sklearn.model_selection import RandomizedSearchCV
+from sklearn.preprocessing import StandardScaler
 from ml_algorithms.ml_algorithm_interface import AlgorithmInterface
 
 
-class RandomForest(AlgorithmInterface):
+class SVMAlgorithm(AlgorithmInterface):
     def __init__(self):
-        super(RandomForest, self).__init__()
+        super(SVMAlgorithm, self).__init__()
 
     def feature_engineering(self):
         self.convert_symbolic_feature_into_continuous()
 
     def train_phase(self):
-        random_forest = RandomForestClassifier()
-
-        # The number of trees in the forest
-        # n_estimators = [100, 500, 900, 1100, 1500]
-        n_estimators = [100]
-
-        # Maximum depth of each tree
-        # max_depth = [10, 15, 20, 25]
-        max_depth = [10, 20]
-
-        # hyper parameter tuning
-        hyper_parameter_grid = {'n_estimators': n_estimators,
-                                'max_depth': max_depth}
+        pipe_svc = Pipeline([('scl', StandardScaler()),
+                             ('clf', SVC(random_state=1))])
+        # param_range = [10 ** c for c in range(-4, 4)]
+        param_range = [0.0001, 0.001]
+        hyper_parameter_grid = {
+            'clf__C': param_range,
+            'clf__gamma': param_range,
+            'clf__kernel': ['linear', 'rbf']
+        }
 
         # Set up the random search with 4-fold cross validation
-        self.classifier = RandomizedSearchCV(estimator=random_forest,
+        self.classifier = RandomizedSearchCV(estimator=pipe_svc,
                                              param_distributions=hyper_parameter_grid,
-                                             cv=4, n_iter=1,
+                                             cv=4, n_iter=5,
                                              scoring='roc_auc',
                                              n_jobs=-1, verbose=2,
                                              return_train_score=True,
